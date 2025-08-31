@@ -39,6 +39,13 @@ import javax.inject.Inject
 import com.anam145.wallet.core.data.datastore.SkinDataStore
 import com.anam145.wallet.core.common.model.Skin
 import com.anam145.wallet.core.common.constants.SkinConstants
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import com.anam145.wallet.core.ui.components.ResponsiveContentWrapper
 
 // Hilt가 의존성을 주입하는 시작점
 @AndroidEntryPoint
@@ -125,6 +132,7 @@ class MainActivity : ComponentActivity() {
                 initialValue = SkinConstants.DEFAULT_SKIN
             )
             AnamWalletApp(
+                activity = this,
                 authState = authStateValue,
                 skin = currentSkin
             )
@@ -146,6 +154,7 @@ class MainActivity : ComponentActivity() {
  */
 @Composable
 fun AnamWalletApp(
+    activity: ComponentActivity,
     authState: MainActivity.AuthState = MainActivity.AuthState.Loading,
     skin: Skin = Skin.ANAM
 ) {
@@ -214,6 +223,7 @@ fun AnamWalletApp(
             
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
+                contentWindowInsets = WindowInsets.safeDrawing,  // 시스템 바 안전 영역
                 topBar = {
                     // 상단 헤더 (인증 화면에서는 숨김)
                     if (showBottomBar) {
@@ -246,13 +256,25 @@ fun AnamWalletApp(
                     }
                 }
             ) { innerPadding ->
-                // Navigation Host - 모든 화면들을 관리
-                AnamNavHost(
-                    navController = navController,
-                    mainViewModel = mainViewModel,
-                    modifier = Modifier.padding(innerPadding),
-                    startDestination = startDestination
-                )
+                // 컨텐츠 레이아웃 래퍼
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding)
+                ) {
+                    // 반응형 콘텐츠 래퍼 - 태블릿에서 폰 크기로 제한
+                    ResponsiveContentWrapper {
+                        // Navigation Host - 모든 화면들을 관리
+                        AnamNavHost(
+                            navController = navController,
+                            mainViewModel = mainViewModel,
+                            modifier = Modifier.fillMaxSize(),
+                            startDestination = startDestination
+                        )
+                    }
+                }
             }
         }
     }
