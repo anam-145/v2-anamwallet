@@ -17,6 +17,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.anam145.wallet.feature.miniapp.blockchain.ui.components.BlockchainWebView
 import com.anam145.wallet.feature.miniapp.common.ui.components.ErrorContent
 import com.anam145.wallet.feature.miniapp.common.ui.components.ServiceConnectionCard
+import com.anam145.wallet.feature.miniapp.common.ui.components.ResponsiveWebViewContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,15 +101,17 @@ private fun BlockchainScreenContent(
                 }
                 uiState.manifest != null -> {
                     uiState.manifest?.let { manifest ->
-                        BlockchainWebView(
-                            blockchainId = blockchainId,
-                            manifest = manifest,
-                            fileManager = fileManager,
-                            onWebViewCreated = { 
-                                webView = it
-                                viewModel.onWebViewReady()
-                            }
-                        )
+                        ResponsiveWebViewContainer {
+                            BlockchainWebView(
+                                blockchainId = blockchainId,
+                                manifest = manifest,
+                                fileManager = fileManager,
+                                onWebViewCreated = { 
+                                    webView = it
+                                    viewModel.onWebViewReady()
+                                }
+                            )
+                        }
                     }
                 }
             }

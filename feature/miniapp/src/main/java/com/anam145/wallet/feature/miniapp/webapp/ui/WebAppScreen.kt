@@ -17,6 +17,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.WebAppWebView
 import com.anam145.wallet.feature.miniapp.common.ui.components.ErrorContent
 import com.anam145.wallet.feature.miniapp.common.ui.components.ServiceConnectionCard
+import com.anam145.wallet.feature.miniapp.common.ui.components.ResponsiveWebViewContainer
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.VPBottomSheet
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.TransactionApprovalBottomSheet
 
@@ -172,25 +173,27 @@ private fun WebAppScreenContent(
                 }
                 uiState.manifest != null -> {
                     uiState.manifest?.let { manifest ->
-                        WebAppWebView(
-                            appId = appId,
-                            manifest = manifest,
-                            fileManager = fileManager,
-                            onTransactionRequest = { transactionData ->
-                                viewModel.handleIntent(
-                                    WebAppContract.Intent.RequestTransaction(transactionData)
-                                )
-                            },
-                            onVPRequest = { vpRequest ->
-                                viewModel.handleIntent(
-                                    WebAppContract.Intent.RequestVP(vpRequest)
-                                )
-                            },
-                            onWebViewCreated = { 
-                                webView = it
-                                viewModel.onWebViewReady()
-                            }
-                        )
+                        ResponsiveWebViewContainer {
+                            WebAppWebView(
+                                appId = appId,
+                                manifest = manifest,
+                                fileManager = fileManager,
+                                onTransactionRequest = { transactionData ->
+                                    viewModel.handleIntent(
+                                        WebAppContract.Intent.RequestTransaction(transactionData)
+                                    )
+                                },
+                                onVPRequest = { vpRequest ->
+                                    viewModel.handleIntent(
+                                        WebAppContract.Intent.RequestVP(vpRequest)
+                                    )
+                                },
+                                onWebViewCreated = { 
+                                    webView = it
+                                    viewModel.onWebViewReady()
+                                }
+                            )
+                        }
                     }
                 }
             }
