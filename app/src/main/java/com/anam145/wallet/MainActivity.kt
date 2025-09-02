@@ -39,12 +39,11 @@ import javax.inject.Inject
 import com.anam145.wallet.core.data.datastore.SkinDataStore
 import com.anam145.wallet.core.common.model.Skin
 import com.anam145.wallet.core.common.constants.SkinConstants
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScaffoldDefaults
 import com.anam145.wallet.core.ui.components.ResponsiveContentWrapper
 
 // Hilt가 의존성을 주입하는 시작점
@@ -223,7 +222,7 @@ fun AnamWalletApp(
             
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                contentWindowInsets = WindowInsets.safeDrawing,  // 시스템 바 안전 영역
+                contentWindowInsets = ScaffoldDefaults.contentWindowInsets,  // 기본값 사용 (시스템 바 안전 영역)
                 topBar = {
                     // 상단 헤더 (인증 화면에서는 숨김)
                     if (showBottomBar) {
@@ -262,7 +261,7 @@ fun AnamWalletApp(
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                         .padding(innerPadding)
-                        .consumeWindowInsets(innerPadding)
+                        .consumeWindowInsets(innerPadding)  // 중첩된 컴포저블에서 insets 읽기 위해 유지
                 ) {
                     // 반응형 콘텐츠 래퍼 - 태블릿에서 폰 크기로 제한
                     ResponsiveContentWrapper {

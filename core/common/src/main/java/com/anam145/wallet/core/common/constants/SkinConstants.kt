@@ -29,10 +29,10 @@ object SkinConstants {
         ),
         Skin.BUSAN to listOf(
             // Assets에 추가된 4개 앱
-            "com.anam.eiz0nffb4oau0raw",
-            "com.anam.h9xkm40xo4ebvi2y",
-            "com.anam.jpnzrp311utb5wrj",
-            "com.anam.vrrpi9dsrp5go70e"
+            "com.anam.1ozphoi7bfguzg6a",
+            "com.anam.6nqxb5qfm5lptbc9",
+            "com.anam.vh7lpswl75iqdarh",
+            "com.anam.wxrni2mmnl1x96o4"
         )
     )
     
