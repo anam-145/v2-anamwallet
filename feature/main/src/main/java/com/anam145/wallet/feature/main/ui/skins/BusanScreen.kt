@@ -76,9 +76,7 @@ data class BusanTokensV5(
     val gray: Color = Color(0xFF8F9295),
     val lightBlue: Color = Color(0xFFE6F4FF),
     val white: Color = Color(0xFFFAFCFF),
-    val green: Color = Color(0xFF4CAF50),
-    val bitcoin: Color = Color(0xFFF7931A),
-    val ethereum: Color = Color(0xFF627EEA)
+    val green: Color = Color(0xFF4CAF50)
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -101,7 +99,7 @@ fun BusanScreen(
     
     // 선택된 블록체인 상태 (실제 활성 블록체인 이름 사용)
     var selectedBlockchain by remember(activeBlockchain) { 
-        mutableStateOf(activeBlockchain?.name ?: "Bitcoin") 
+        mutableStateOf(activeBlockchain?.name ?: "") 
     }
     
     // 애니메이션 트리거
@@ -499,30 +497,6 @@ private fun ActiveDigitalAssetCard(
                             width = 1.dp,
                             color = tokens.green.copy(alpha = 0.3f)
                         )
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(24.dp))
-                
-                // 잔액 정보
-                Column {
-                    Text(
-                        strings.balance,
-                        fontSize = 12.sp,
-                        color = tokens.gray,
-                        letterSpacing = 0.04.em
-                    )
-                    Text(
-                        when {
-                            activeBlockchain?.name?.contains("Bitcoin", ignoreCase = true) == true -> "0.0024 BTC"
-                            activeBlockchain?.name?.contains("Ethereum", ignoreCase = true) == true -> "1.2345 ETH"
-                            activeBlockchain?.name?.contains("Solana", ignoreCase = true) == true -> "50.0 SOL"
-                            else -> "0.0 TOKENS"
-                        },
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = tokens.black,
-                        letterSpacing = 0.02.em
                     )
                 }
                 
