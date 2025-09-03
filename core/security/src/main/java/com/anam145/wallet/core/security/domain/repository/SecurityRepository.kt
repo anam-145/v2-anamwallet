@@ -13,24 +13,24 @@ import kotlinx.coroutines.flow.Flow
 interface SecurityRepository {
     
     /**
-     * 비밀번호 해시와 관련 정보를 저장합니다.
+     * 비밀번호 파생키(Password Verifier)와 관련 정보를 저장합니다.
      * 
-     * @param passwordHash SCrypt로 해싱된 비밀번호
-     * @param salt 해싱에 사용된 salt
+     * @param passwordVerifier SCrypt KDF로 생성된 파생키 (해시가 아님!)
+     * @param salt KDF에 사용된 salt
      * @param scryptParams SCrypt 파라미터 정보
      */
-    suspend fun savePasswordHash(
-        passwordHash: ByteArray,
+    suspend fun savePasswordVerifier(
+        passwordVerifier: ByteArray,
         salt: ByteArray,
         scryptParams: ScryptParams
     ): Result<Unit>
     
     /**
-     * 저장된 비밀번호 해시를 조회합니다.
+     * 저장된 비밀번호 파생키를 조회합니다.
      * 
-     * @return 비밀번호 해시, 없으면 null
+     * @return 비밀번호 파생키, 없으면 null
      */
-    suspend fun getPasswordHash(): ByteArray?
+    suspend fun getPasswordVerifier(): ByteArray?
     
     /**
      * 저장된 salt를 조회합니다.
