@@ -98,6 +98,10 @@ data class Strings(
     val blockchainSwitch: String = "블록체인 전환",
     val changeCurrentBlockchain: String = "현재 블록체인을 변경합니다",
     val busanServices: String = "부산 서비스",
+    val noServicesInstalled: String = "설치된 서비스가 없습니다",
+    val addServicesHint: String = "아래 버튼을 눌러 서비스를 추가하세요",
+    val installBlockchainHint: String = "블록체인을 설치해주세요",
+    val noBlockchain: String = "No Blockchain",
     
     // Auth - Login Screen
     val loginTitle: String = "비밀번호를 입력하여 지갑에 접근하세요",
@@ -322,6 +326,10 @@ val EnglishStrings = Strings(
     blockchainSwitch = "Switch Blockchain",
     changeCurrentBlockchain = "Change the current blockchain",
     busanServices = "Busan Services",
+    noServicesInstalled = "No services installed",
+    addServicesHint = "Press the button below to add services",
+    installBlockchainHint = "Please install a blockchain",
+    noBlockchain = "No Blockchain",
     
     // Auth - Login Screen
     loginTitle = "Enter password to access your wallet",

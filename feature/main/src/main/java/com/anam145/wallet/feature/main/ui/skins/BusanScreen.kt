@@ -222,6 +222,9 @@ private fun BlockchainSelector(
     val strings = LocalStrings.current
     var expanded by remember { mutableStateOf(false) }
     
+    // 현재 활성 블록체인 찾기
+    val activeBlockchain = blockchainApps.find { it.appId == activeBlockchainId }
+    
     val alpha by animateFloatAsState(
         targetValue = if (isVisible) 1f else 0f,
         animationSpec = spring(),
@@ -244,38 +247,51 @@ private fun BlockchainSelector(
         
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = it },
+            onExpandedChange = { 
+                if (blockchainApps.isNotEmpty()) {
+                    expanded = it 
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = selectedBlockchain,
+                value = if (blockchainApps.isEmpty()) strings.installBlockchainHint else selectedBlockchain,
                 onValueChange = { },
                 readOnly = true,
-                label = { 
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = tokens.busanBlue,
-                                shape = RoundedCornerShape(4.dp)
+                enabled = blockchainApps.isNotEmpty(),
+                label = if (activeBlockchain != null) { 
+                    {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = tokens.busanBlue,
+                                    shape = RoundedCornerShape(4.dp)
+                                )
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                "ACTIVE",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                letterSpacing = 0.04.em
                             )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            "ACTIVE",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            letterSpacing = 0.04.em
+                        }
+                    }
+                } else null,
+                trailingIcon = if (blockchainApps.isNotEmpty()) {
+                    {
+                        Icon(
+                            Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { 
+                                if (blockchainApps.isNotEmpty()) {
+                                    expanded = !expanded
+                                }
+                            }
                         )
                     }
-                },
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.ArrowDropDown,
-                        contentDescription = "드롭다운",
-                        modifier = Modifier.clickable { expanded = !expanded }
-                    )
-                },
+                } else null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(),
@@ -283,10 +299,13 @@ private fun BlockchainSelector(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = tokens.busanSkyBlue,
                     unfocusedBorderColor = tokens.busanLightBlue.copy(alpha = 0.5f),
+                    disabledBorderColor = tokens.gray.copy(alpha = 0.3f),
                     focusedLabelColor = tokens.busanBlue,
-                    unfocusedLabelColor = tokens.gray
+                    unfocusedLabelColor = tokens.gray,
+                    disabledTextColor = tokens.gray.copy(alpha = 0.7f)
                 )
             )
             
@@ -456,13 +475,13 @@ private fun ActiveDigitalAssetCard(
                             
                             Column {
                                 Text(
-                                    activeBlockchain?.name ?: "No Blockchain",
+                                    activeBlockchain?.name ?: strings.noBlockchain,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = tokens.black
                                 )
                                 Text(
-                                    activeBlockchain?.appId ?: "No ID",
+                                    activeBlockchain?.appId ?: "",
                                     fontSize = 12.sp,
                                     color = tokens.gray,
                                     letterSpacing = 0.02.em
@@ -471,33 +490,35 @@ private fun ActiveDigitalAssetCard(
                         }
                     }
                     
-                    // Material3 AssistChip으로 변경
-                    AssistChip(
-                        onClick = { /* 상세 화면으로 이동 */ },
-                        label = { 
-                            Text(
-                                strings.activated,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Medium
+                    // Material3 AssistChip - 블록체인이 선택되었을 때만 표시
+                    if (activeBlockchain != null) {
+                        AssistChip(
+                            onClick = { /* 상세 화면으로 이동 */ },
+                            label = { 
+                                Text(
+                                    strings.activated,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.CheckCircle,
+                                    contentDescription = strings.activated,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = tokens.green.copy(alpha = 0.08f),
+                                labelColor = tokens.green,
+                                leadingIconContentColor = tokens.green
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = tokens.green.copy(alpha = 0.3f)
                             )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.CheckCircle,
-                                contentDescription = strings.activated,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        },
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = tokens.green.copy(alpha = 0.08f),
-                            labelColor = tokens.green,
-                            leadingIconContentColor = tokens.green
-                        ),
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = tokens.green.copy(alpha = 0.3f)
                         )
-                    )
+                    }
                 }
                 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -594,6 +615,8 @@ private fun CitizenServiceGrid(
     regularApps: List<MiniApp> = emptyList(),
     onRegularAppClick: (MiniApp) -> Unit = {}
 ) {
+    val strings = LocalStrings.current
+    
     // 실제 앱 데이터를 BusanCitizenServiceV5 형식으로 변환
     val services = remember(regularApps) {
         regularApps.map { app ->
@@ -611,14 +634,41 @@ private fun CitizenServiceGrid(
         }
     }
     
-    // 서비스 개수에 따라 높이 동적 계산
-    // 각 카드 높이(약 70dp) + spacing(12dp)
-    val gridHeight = remember(services.size) {
-        val rows = (services.size + 1) / 2  // 2열이므로 올림 처리
-        (rows * 70 + (rows - 1) * 12).dp
-    }
-    
-    LazyVerticalGrid(
+    // 서비스가 하나도 없을 때 빈 상태 표시
+    if (services.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    strings.noServicesInstalled,
+                    fontSize = 14.sp,
+                    color = tokens.gray,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    strings.addServicesHint,
+                    fontSize = 12.sp,
+                    color = tokens.gray.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    } else {
+        // 서비스 개수에 따라 높이 동적 계산
+        // 각 카드 높이(약 70dp) + spacing(12dp)
+        val gridHeight = remember(services.size) {
+            val rows = (services.size + 1) / 2  // 2열이므로 올림 처리
+            (rows * 70 + (rows - 1) * 12).dp
+        }
+        
+        LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxWidth()
@@ -640,6 +690,7 @@ private fun CitizenServiceGrid(
                 }
             )
         }
+    }
     }
 }
 
@@ -708,7 +759,7 @@ private fun CitizenServiceCard(
             
             Icon(
                 Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "${service.name} 열기",
+                contentDescription = null,
                 modifier = Modifier.size(16.dp),
                 tint = tokens.gray.copy(alpha = 0.5f)
             )
