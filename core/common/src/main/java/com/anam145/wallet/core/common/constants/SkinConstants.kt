@@ -29,10 +29,10 @@ object SkinConstants {
         ),
         Skin.BUSAN to listOf(
             // Assets에 추가된 4개 앱
-            "com.anam.1ozphoi7bfguzg6a",
-            "com.anam.6nqxb5qfm5lptbc9",
-            "com.anam.vh7lpswl75iqdarh",
-            "com.anam.wxrni2mmnl1x96o4"
+            "com.anam.6nqxb5qfm5lptbc9", // 비온미디어
+            "com.anam.vh7lpswl75iqdarh", // 부산일보
+            "com.anam.lti7t4m0hpf3mjsp", // 비트코인
+            "com.anam.qdpwri1pmzf0687n" // 이더리움
         )
     )
     
