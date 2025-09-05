@@ -237,14 +237,8 @@ fun AnamWalletApp(
                                 else -> strings.headerTitle
                             },
                             showBlockchainStatus = true,  // 모든 화면에서 블록체인 상태 표시
-                            activeBlockchainName = activeBlockchain?.name,
-                            onBlockchainClick = if (activeBlockchain != null) {
-                                {
-                                    mainViewModel.handleIntent(
-                                        MainContract.MainIntent.ClickBlockchainApp(activeBlockchain)
-                                    )
-                                }
-                            } else null
+                            activeBlockchainName = activeBlockchain?.name
+                            // onBlockchainClick 제거 - 클릭해도 이동하지 않음
                         )
                     }
                 },

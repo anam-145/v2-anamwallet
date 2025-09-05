@@ -313,7 +313,12 @@ private fun BlockchainSelector(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                blockchainApps.forEach { miniApp ->
+                // 활성화된 블록체인을 맨 위로 정렬
+                val sortedBlockchainApps = blockchainApps.sortedByDescending { 
+                    it.appId == activeBlockchainId 
+                }
+                
+                sortedBlockchainApps.forEach { miniApp ->
                     val isActive = miniApp.appId == activeBlockchainId
                     
                     DropdownMenuItem(
@@ -490,33 +495,13 @@ private fun ActiveDigitalAssetCard(
                         }
                     }
                     
-                    // Material3 AssistChip - 블록체인이 선택되었을 때만 표시
+                    // 체크 아이콘만 표시 - 블록체인이 선택되었을 때만 표시
                     if (activeBlockchain != null) {
-                        AssistChip(
-                            onClick = { /* 상세 화면으로 이동 */ },
-                            label = { 
-                                Text(
-                                    strings.activated,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.CheckCircle,
-                                    contentDescription = strings.activated,
-                                    modifier = Modifier.size(14.dp)
-                                )
-                            },
-                            colors = AssistChipDefaults.assistChipColors(
-                                containerColor = tokens.green.copy(alpha = 0.08f),
-                                labelColor = tokens.green,
-                                leadingIconContentColor = tokens.green
-                            ),
-                            border = BorderStroke(
-                                width = 1.dp,
-                                color = tokens.green.copy(alpha = 0.3f)
-                            )
+                        Icon(
+                            Icons.Default.CheckCircle,
+                            contentDescription = strings.activated,
+                            modifier = Modifier.size(20.dp),
+                            tint = tokens.green
                         )
                     }
                 }

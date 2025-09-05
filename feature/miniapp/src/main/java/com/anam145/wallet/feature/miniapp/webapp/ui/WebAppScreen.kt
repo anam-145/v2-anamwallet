@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anam145.wallet.core.ui.components.Header
 import com.anam145.wallet.core.ui.language.LocalStrings
@@ -143,8 +144,8 @@ private fun WebAppScreenContent(
         topBar = {
             Header(
                 title = strings.headerTitle,
-                showBackButton = true,
-                onBackClick = {
+                showBackButton = false,  // 뒤로가기 버튼 제거
+                onTitleClick = {  // 타이틀 클릭 시 뒤로가기
                     viewModel.handleIntent(WebAppContract.Intent.NavigateBack)
                 },
                 showBlockchainStatus = !uiState.activeBlockchainName.isNullOrEmpty(),

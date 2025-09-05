@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
  * @param title 표시할 타이틀
  * @param showBackButton 뒤로가기 버튼 표시 여부
  * @param onBackClick 뒤로가기 버튼 클릭 콜백
+ * @param onTitleClick 타이틀 클릭 콜백
  * @param showBlockchainStatus 블록체인 상태 표시 여부
  * @param activeBlockchainName 활성 블록체인 이름
  * @param onBlockchainClick 블록체인 칩 클릭 콜백
@@ -46,6 +47,7 @@ fun Header(
     title: String,
     showBackButton: Boolean = false,
     onBackClick: (() -> Unit)? = null,
+    onTitleClick: (() -> Unit)? = null,
     showBlockchainStatus: Boolean = false,
     activeBlockchainName: String? = null,
     onBlockchainClick: (() -> Unit)? = null
@@ -82,7 +84,7 @@ fun Header(
                     }
                 }
                 
-                // 타이틀 (고정 색상)
+                // 타이틀 (고정 색상, 클릭 가능)
                 Text(
                     text = title,
                     fontSize = 24.sp,
@@ -91,6 +93,17 @@ fun Header(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .padding(start = if (showBackButton) 48.dp else 0.dp)
+                        .then(
+                            if (onTitleClick != null) {
+                                Modifier
+                                    .clickable { 
+                                        onTitleClick() 
+                                    }
+                                    .padding(vertical = 8.dp, horizontal = 4.dp)  // 터치 영역 확대
+                            } else {
+                                Modifier
+                            }
+                        )
                 )
             }
             

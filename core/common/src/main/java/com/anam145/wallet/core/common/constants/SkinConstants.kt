@@ -31,8 +31,8 @@ object SkinConstants {
             // Assets에 추가된 4개 앱
             "com.anam.6nqxb5qfm5lptbc9", // 비온미디어
             "com.anam.vh7lpswl75iqdarh", // 부산일보
-            "com.anam.lti7t4m0hpf3mjsp", // 비트코인
-            "com.anam.qdpwri1pmzf0687n" // 이더리움
+            "com.anam.rehrxj11f38gn09k", // 비트코인
+            "com.anam.osba5s0oy5582dc0" // 이더리움
         )
     )
     
