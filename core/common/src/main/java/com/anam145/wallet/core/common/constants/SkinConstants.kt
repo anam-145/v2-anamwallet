@@ -50,6 +50,18 @@ object SkinConstants {
             "com.la.uber",
             "com.la.universal",
             "com.la.yelp"
+        ),
+        Skin.LIBERIA to listOf(
+            "com.anam.00liberia",  // 라이베리아가 첫 번째 (00으로 시작해서 알파벳 순서상 가장 앞)
+            "com.anam.bitcoin",
+            "com.anam.ethereum",
+            "com.liberia.undp",
+            "com.liberia.ecobankliberia",
+            "com.liberia.liberianobserver",
+            "com.liberia.universityofliberia",
+            "com.liberia.rideliberia",
+            "com.liberia.liberiahrjobs",
+            "com.liberia.gtworldliberia"
         )
     )
     
@@ -67,6 +79,7 @@ object SkinConstants {
         Skin.ANAM to SectionOrder.BLOCKCHAIN_FIRST,
         Skin.BUSAN to SectionOrder.APPS_FIRST,
         Skin.SEOUL to SectionOrder.BLOCKCHAIN_FIRST,
-        Skin.LA to SectionOrder.BLOCKCHAIN_FIRST
+        Skin.LA to SectionOrder.BLOCKCHAIN_FIRST,
+        Skin.LIBERIA to SectionOrder.BLOCKCHAIN_FIRST  // 라이베리아도 블록체인이 먼저
     )
 }

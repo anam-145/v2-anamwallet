@@ -98,6 +98,28 @@ private val LAColorScheme = lightColorScheme(
     onError = Color(0xFFFFFFFF)            
 )
 
+// ========== LIBERIA (자연과 자유) ==========
+// 라이베리아 - 열대 녹색과 따뜻한 베이지 톤
+private val LiberiaColorScheme = lightColorScheme(
+    primary = Color(0xFF4A7C59),           // 진한 열대 녹색
+    secondary = Color(0xFF8FBC8B),         // 중간 녹색
+    tertiary = Color(0xFFF5DEB3),          // 따뜻한 베이지
+    background = Color(0xFFFCFCFC),        // 거의 흰색 (약간의 회색빛)
+    surface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFFF0F5F0),    // 매우 연한 녹색빛
+    primaryContainer = Color(0xFFD4E6D4),   // 밝은 녹색
+    onPrimaryContainer = Color(0xFF1A3322), // 진한 녹색
+    onPrimary = Color(0xFFFFFFFF),         
+    onSecondary = Color(0xFFFFFFFF),       
+    onTertiary = Color(0xFF5C4A33),        // 진한 베이지
+    onBackground = Color(0xFF1C1B1F),      
+    onSurface = Color(0xFF1C1B1F),         
+    onSurfaceVariant = Color(0xFF4A5C4A),  // 녹색빛 그레이
+    outline = Color(0xFFB8D6B8),           // 연한 녹색
+    error = Color(0xFFBA1A1A),             
+    onError = Color(0xFFFFFFFF)            
+)
+
 /**
  * 스킨에 따른 ColorScheme 반환
  */
@@ -106,4 +128,5 @@ fun getColorSchemeForSkin(skin: Skin) = when (skin) {
     Skin.BUSAN -> BusanColorScheme
     Skin.SEOUL -> SeoulColorScheme
     Skin.LA -> LAColorScheme
+    Skin.LIBERIA -> LiberiaColorScheme
 }

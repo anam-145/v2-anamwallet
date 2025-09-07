@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,6 +47,7 @@ fun IdentityScreen(
     onNavigateToStudentCard: (String) -> Unit = {},
     onNavigateToDriverLicense: (String) -> Unit = {},
     onNavigateToIssue: () -> Unit = {},
+    onNavigateToDigitalId: () -> Unit = {},
     viewModel: IdentityViewModel = hiltViewModel()
 ) {
     val strings = LocalStrings.current
@@ -82,70 +84,51 @@ fun IdentityScreen(
             )
         }
         
-        // 카드 리스트 또는 빈 상태
-        when {
-            uiState.isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        // 카드 리스트
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-            uiState.issuedCredentials.isEmpty() -> {
-                // 발급된 신분증이 없는 경우
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            text = strings.identityNoIssuedIds,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-            else -> {
-                // 발급된 신분증 표시
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    uiState.issuedCredentials.forEach { credential ->
-                        when (credential.type) {
-                            CredentialType.STUDENT_CARD -> {
-                                StudentCard(
-                                    credential = credential,
-                                    onClick = { 
-                                        viewModel.handleIntent(
-                                            IdentityContract.Intent.NavigateToDetail(credential)
-                                        )
-                                    }
-                                )
-                            }
-                            CredentialType.DRIVER_LICENSE -> {
-                                DriverLicenseCard(
-                                    credential = credential,
-                                    onClick = { 
-                                        viewModel.handleIntent(
-                                            IdentityContract.Intent.NavigateToDetail(credential)
-                                        )
-                                    }
-                                )
-                            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // UNDP ID Card (Always show - Hardcoded)
+                UNDPIDCard(
+                    onClick = { onNavigateToDigitalId() }
+                )
+                
+                // Other credentials
+                uiState.issuedCredentials.forEach { credential ->
+                    when (credential.type) {
+                        CredentialType.STUDENT_CARD -> {
+                            StudentCard(
+                                credential = credential,
+                                onClick = { 
+                                    viewModel.handleIntent(
+                                        IdentityContract.Intent.NavigateToDetail(credential)
+                                    )
+                                }
+                            )
+                        }
+                        CredentialType.DRIVER_LICENSE -> {
+                            DriverLicenseCard(
+                                credential = credential,
+                                onClick = { 
+                                    viewModel.handleIntent(
+                                        IdentityContract.Intent.NavigateToDetail(credential)
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -282,15 +265,20 @@ private fun StudentCard(
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 프로필 사진
-                Image(
-                    painter = painterResource(id = IdentityR.drawable.ic_photo),
-                    contentDescription = "Profile Photo",
+                // 프로필 아이콘
+                Surface(
                     modifier = Modifier
                         .size(width = 50.dp, height = 62.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                    color = Color(0xFFE5E7EB)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        modifier = Modifier.padding(8.dp),
+                        tint = Color(0xFF6B7280)
+                    )
+                }
                 
                 Spacer(modifier = Modifier.width(15.dp))
                 
@@ -333,6 +321,182 @@ private fun StudentCard(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF2E7D32)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UNDPIDCard(
+    onClick: () -> Unit
+) {
+    val strings = LocalStrings.current
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp,
+            pressedElevation = 8.dp,
+            hoveredElevation = 4.dp
+        )
+    ) {
+        Column {
+            // 카드 헤더
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF0369A1),
+                                Color(0xFF0EA5E9)
+                            )
+                        )
+                    )
+                    .debouncedClickable { onClick() }
+            ) {
+                // UN 로고 패턴 (투명도 적용)
+                Box(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .align(Alignment.CenterEnd)
+                        .offset(x = 10.dp)
+                        .alpha(0.15f)
+                ) {
+                    // UN 원형 패턴
+                    Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .align(Alignment.Center)
+                            .clip(CircleShape)
+                            .border(
+                                width = 3.dp,
+                                color = Color.White,
+                                shape = CircleShape
+                            )
+                    )
+                    // 내부 원
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .align(Alignment.Center)
+                            .background(
+                                color = Color.White.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                    )
+                }
+                
+                // 기관 정보
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(horizontal = 20.dp)
+                ) {
+                    Text(
+                        text = "United Nations",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    
+                    Spacer(modifier = Modifier.height(2.dp))
+                    
+                    Text(
+                        text = "UNDP Event Check-in",
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 11.sp
+                    )
+                }
+                
+                // 상세보기 버튼
+                Text(
+                    text = strings.identityViewDetail,
+                    color = Color.White,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 20.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                )
+            }
+            
+            // 카드 바디
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 프로필 아이콘
+                Surface(
+                    modifier = Modifier
+                        .size(width = 50.dp, height = 62.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    color = Color(0xFFE5E7EB)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        modifier = Modifier.padding(8.dp),
+                        tint = Color(0xFF6B7280)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(15.dp))
+                
+                // 사용자 정보
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "James Kollie",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    Text(
+                        text = "ID: 2NEpo7TZRRrLZSi2U",
+                        fontSize = 14.sp,
+                        color = Color(0xFF666666)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(2.dp))
+                    
+                    Text(
+                        text = "Program Participant",
+                        fontSize = 13.sp,
+                        color = Color(0xFF888888)
+                    )
+                }
+                
+                // Active 배지
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = Color(0xFF10B981)
+                ) {
+                    Text(
+                        text = "Active",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
                     )
                 }
             }
@@ -452,15 +616,20 @@ private fun DriverLicenseCard(
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 프로필 사진
-                Image(
-                    painter = painterResource(id = IdentityR.drawable.ic_photo),
-                    contentDescription = "Profile Photo",
+                // 프로필 아이콘
+                Surface(
                     modifier = Modifier
                         .size(width = 50.dp, height = 62.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                    color = Color(0xFFE5E7EB)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        modifier = Modifier.padding(8.dp),
+                        tint = Color(0xFF6B7280)
+                    )
+                }
                 
                 Spacer(modifier = Modifier.width(15.dp))
                 

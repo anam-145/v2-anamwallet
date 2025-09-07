@@ -83,5 +83,22 @@ fun ThemeIllustration(
         Skin.ANAM -> {
             // ANAM 테마는 일러스트 없음
         }
+        Skin.LIBERIA -> {
+            Box(
+                modifier = modifier,
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.illustration_liberia),
+                    contentDescription = "Liberia Theme Illustration",
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .aspectRatio(1f)
+                        .padding(16.dp)
+                        .alpha(0.3f),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
     }
 }

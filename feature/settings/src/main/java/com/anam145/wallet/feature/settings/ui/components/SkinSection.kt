@@ -65,6 +65,7 @@ fun SkinSection(
                                     Skin.SEOUL -> strings.skinSeoul
                                     Skin.BUSAN -> strings.skinBusan
                                     Skin.LA -> strings.skinLA
+                                    Skin.LIBERIA -> "Liberia"
                                 }
                             )
                         },

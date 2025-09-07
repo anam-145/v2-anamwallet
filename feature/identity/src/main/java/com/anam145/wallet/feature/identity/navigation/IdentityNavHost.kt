@@ -13,6 +13,8 @@ import com.anam145.wallet.feature.identity.ui.main.IdentityScreen
 import com.anam145.wallet.feature.identity.ui.issue.IssueSelectScreen
 import com.anam145.wallet.feature.identity.ui.detail.StudentCardDetailScreen
 import com.anam145.wallet.feature.identity.ui.detail.DriverLicenseDetailScreen
+import com.anam145.wallet.feature.identity.ui.digitalid.DigitalIDScreen
+import com.anam145.wallet.feature.identity.ui.verification.VerificationSuccessScreen
 
 /**
  * Identity 기능의 Nested Navigation Host
@@ -46,6 +48,11 @@ fun IdentityNavHost(
                 },
                 onNavigateToIssue = {
                     navController.navigate(IdentityRoute.IssueSelect.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToDigitalId = {
+                    navController.navigate(IdentityRoute.DigitalID.route) {
                         launchSingleTop = true
                     }
                 }
@@ -92,6 +99,33 @@ fun IdentityNavHost(
                 }
             )
         }
+        
+        // 디지털 ID 화면
+        animatedComposable(
+            route = IdentityRoute.DigitalID.route
+        ) {
+            DigitalIDScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onQRCodeClick = {
+                    navController.navigate(IdentityRoute.VerificationSuccess.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        
+        // 검증 성공 화면
+        animatedComposable(
+            route = IdentityRoute.VerificationSuccess.route
+        ) {
+            VerificationSuccessScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 
@@ -107,4 +141,6 @@ sealed class IdentityRoute(val route: String) {
     data object DriverLicense : IdentityRoute("identity_driver_license/{vcId}") {
         fun createRoute(vcId: String) = "identity_driver_license/$vcId"
     }
+    data object DigitalID : IdentityRoute("identity_digital_id")
+    data object VerificationSuccess : IdentityRoute("identity_verification_success")
 }
