@@ -12,9 +12,11 @@ interface IKeystoreDecryptCallback {
      * 키스토어 복호화 성공
      * 
      * @param address 지갑 주소
-     * @param privateKey 복호화된 개인키 (16진수 문자열)
+     * @param secret 복호화된 비밀 데이터 (16진수 문자열, 0x prefix 없음)
+     *               - Ethereum: mnemonic phrase의 hex
+     *               - Bitcoin: wallet JSON (mnemonic + networks)의 hex
      */
-    void onSuccess(String address, String privateKey);
+    void onSuccess(String address, String secret);
     
     /**
      * 키스토어 복호화 실패

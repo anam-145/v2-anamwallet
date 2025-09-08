@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 /**
  * 키스토어 복호화 UseCase
- * 암호화된 키스토어에서 개인키를 추출합니다.
+ * 암호화된 키스토어에서 비밀 데이터를 복호화합니다.
  */
 class DecryptKeystoreUseCase @Inject constructor(
     private val gson: Gson
@@ -30,7 +30,7 @@ class DecryptKeystoreUseCase @Inject constructor(
      * 
      * @param password 사용자 비밀번호
      * @param keystoreJson 키스토어 JSON 문자열
-     * @return 복호화된 인증 정보 (주소, 개인키)
+     * @return 복호화된 인증 정보 (주소, 비밀 데이터)
      */
     operator fun invoke(
         password: String,
@@ -78,12 +78,12 @@ class DecryptKeystoreUseCase @Inject constructor(
         val secretKeySpec = SecretKeySpec(encryptKey, "AES")
         
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivSpec)
-        val privateKeyBytes = cipher.doFinal(cipherText)
+        val secretBytes = cipher.doFinal(cipherText)
         
-        // 7. 결과 반환
+        // 7. 결과 반환 (비밀 데이터는 hex 형태로 반환, 0x prefix 없음)
         Credentials(
             address = keyStoreFile.address,
-            privateKey = CryptoUtils.toHexStringNoPrefix(privateKeyBytes)
+            privateKey = CryptoUtils.toHexStringNoPrefix(secretBytes)  // 실제로는 secret data
         )
     }
     

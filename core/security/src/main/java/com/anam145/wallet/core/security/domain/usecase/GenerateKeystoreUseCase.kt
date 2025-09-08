@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 /**
  * 키스토어 생성 UseCase
- * 비밀번호와 개인키를 사용하여 암호화된 키스토어를 생성합니다.
+ * 비밀번호와 비밀 데이터를 사용하여 암호화된 키스토어를 생성합니다.
  */
 class GenerateKeystoreUseCase @Inject constructor(
     private val gson: Gson
@@ -34,13 +34,15 @@ class GenerateKeystoreUseCase @Inject constructor(
      * 
      * @param password 사용자 비밀번호
      * @param address 지갑 주소
-     * @param privateKey 개인키 (16진수 문자열)
+     * @param secret 암호화할 비밀 데이터 (16진수 문자열, 0x prefix 포함)
+     *               - Ethereum: mnemonic phrase의 hex
+     *               - Bitcoin: wallet JSON (mnemonic + networks)의 hex
      * @return 암호화된 키스토어 JSON 문자열
      */
     operator fun invoke(
         password: String,
         address: String,
-        privateKey: String,
+        secret: String,
         useLightMode: Boolean = false
     ): Result<String> = runCatching {
         // 1. Salt 생성 (256비트)
@@ -60,8 +62,8 @@ class GenerateKeystoreUseCase @Inject constructor(
         // 4. IV 생성 (128비트)
         val iv = CryptoUtils.generateRandomBytes(16)
         
-        // 5. 개인키를 바이트 배열로 변환
-        val privateKeyBytes = CryptoUtils.hexStringToByteArray(privateKey)
+        // 5. 비밀 데이터를 바이트 배열로 변환
+        val secretBytes = CryptoUtils.hexStringToByteArray(secret)
         
         // 6. AES 암호화
         val cipher = Cipher.getInstance(CIPHER_ALGORITHM)
@@ -69,7 +71,7 @@ class GenerateKeystoreUseCase @Inject constructor(
         val secretKeySpec = SecretKeySpec(encryptKey, "AES")
         
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec)
-        val cipherText = cipher.doFinal(privateKeyBytes)
+        val cipherText = cipher.doFinal(secretBytes)
         
         // 7. MAC 생성 (무결성 검증용)
         val mac = CryptoUtils.generateMac(derivedKey, cipherText)
