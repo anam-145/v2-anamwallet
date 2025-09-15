@@ -463,7 +463,7 @@ private fun UNDPIDCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "James Kollie",
+                        text = "Jean Uwimana",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black

@@ -98,9 +98,9 @@ private val LAColorScheme = lightColorScheme(
     onError = Color(0xFFFFFFFF)            
 )
 
-// ========== LIBERIA (자연과 자유) ==========
-// 라이베리아 - 열대 녹색과 따뜻한 베이지 톤
-private val LiberiaColorScheme = lightColorScheme(
+// ========== RWANDA (천 개의 언덕의 나라) ==========
+// 르완다 - 열대 녹색과 따뜻한 베이지 톤
+private val RwandaColorScheme = lightColorScheme(
     primary = Color(0xFF4A7C59),           // 진한 열대 녹색
     secondary = Color(0xFF8FBC8B),         // 중간 녹색
     tertiary = Color(0xFFF5DEB3),          // 따뜻한 베이지
@@ -110,7 +110,7 @@ private val LiberiaColorScheme = lightColorScheme(
     primaryContainer = Color(0xFFD4E6D4),   // 밝은 녹색
     onPrimaryContainer = Color(0xFF1A3322), // 진한 녹색
     onPrimary = Color(0xFFFFFFFF),         
-    onSecondary = Color(0xFFFFFFFF),       
+    onSecondary = Color(0xFF1C1B1F),       // 가독성을 위해 변경
     onTertiary = Color(0xFF5C4A33),        // 진한 베이지
     onBackground = Color(0xFF1C1B1F),      
     onSurface = Color(0xFF1C1B1F),         
@@ -128,5 +128,5 @@ fun getColorSchemeForSkin(skin: Skin) = when (skin) {
     Skin.BUSAN -> BusanColorScheme
     Skin.SEOUL -> SeoulColorScheme
     Skin.LA -> LAColorScheme
-    Skin.LIBERIA -> LiberiaColorScheme
+    Skin.RWANDA -> RwandaColorScheme
 }

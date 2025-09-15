@@ -51,17 +51,17 @@ object SkinConstants {
             "com.la.universal",
             "com.la.yelp"
         ),
-        Skin.LIBERIA to listOf(
-            "com.anam.00liberia",  // 라이베리아가 첫 번째 (00으로 시작해서 알파벳 순서상 가장 앞)
+        Skin.RWANDA to listOf(
+            "com.anam.00rwanda",  // 르완다가 첫 번째 (00으로 시작해서 알파벳 순서상 가장 앞)
             "com.anam.bitcoin",
             "com.anam.ethereum",
-            "com.liberia.undp",
-            "com.liberia.ecobankliberia",
-            "com.liberia.liberianobserver",
-            "com.liberia.universityofliberia",
-            "com.liberia.rideliberia",
-            "com.liberia.liberiahrjobs",
-            "com.liberia.gtworldliberia"
+            "com.rwanda.undprwanda",
+            "com.rwanda.equitybank",
+            "com.rwanda.irembogov",
+            "com.rwanda.jobinrwanda",
+            "com.rwanda.newtimes",
+            "com.rwanda.universityofrwanda",
+            "com.rwanda.yegorwanda"
         )
     )
     
@@ -80,6 +80,6 @@ object SkinConstants {
         Skin.BUSAN to SectionOrder.APPS_FIRST,
         Skin.SEOUL to SectionOrder.BLOCKCHAIN_FIRST,
         Skin.LA to SectionOrder.BLOCKCHAIN_FIRST,
-        Skin.LIBERIA to SectionOrder.BLOCKCHAIN_FIRST  // 라이베리아도 블록체인이 먼저
+        Skin.RWANDA to SectionOrder.BLOCKCHAIN_FIRST  // 르완다도 블록체인이 먼저
     )
 }

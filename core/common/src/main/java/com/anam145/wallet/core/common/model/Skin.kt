@@ -10,5 +10,5 @@ enum class Skin {
     BUSAN,    // 부산
     SEOUL,    // 서울 (향후 활성화)
     LA,       // LA (향후 활성화)
-    LIBERIA   // 라이베리아
+    RWANDA   // 르완다
 }

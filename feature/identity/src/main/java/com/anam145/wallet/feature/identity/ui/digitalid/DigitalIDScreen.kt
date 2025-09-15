@@ -213,7 +213,7 @@ fun DigitalIDScreen(
                             
                             // Name
                             Text(
-                                text = "James Kollie",
+                                text = "Jean Uwimana",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF0F172A)

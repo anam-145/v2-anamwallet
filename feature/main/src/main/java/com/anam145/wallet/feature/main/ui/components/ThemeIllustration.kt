@@ -83,14 +83,14 @@ fun ThemeIllustration(
         Skin.ANAM -> {
             // ANAM 테마는 일러스트 없음
         }
-        Skin.LIBERIA -> {
+        Skin.RWANDA -> {
             Box(
                 modifier = modifier,
                 contentAlignment = Alignment.BottomEnd
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.illustration_liberia),
-                    contentDescription = "Liberia Theme Illustration",
+                    painter = painterResource(id = R.drawable.illustration_rwanda),
+                    contentDescription = "Rwanda Theme Illustration",
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .aspectRatio(1f)

@@ -393,11 +393,11 @@ private fun getKoreanStringsForSkin(skin: Skin): Strings {
             settingsAppInfoDescription = "LA Wallet에 대해 알아보기",
             loginTitle = "비밀번호를 입력하여 LA Wallet에 접근하세요"
         )
-        Skin.LIBERIA -> baseStrings.copy(
-            headerTitle = "Liberia Wallet",
-            headerTitleMain = "Liberia Wallet",
-            settingsAppInfoDescription = "Liberia Wallet에 대해 알아보기",
-            loginTitle = "비밀번호를 입력하여 Liberia Wallet에 접근하세요"
+        Skin.RWANDA -> baseStrings.copy(
+            headerTitle = "Rwanda Wallet",
+            headerTitleMain = "Rwanda Wallet",
+            settingsAppInfoDescription = "Rwanda Wallet에 대해 알아보기",
+            loginTitle = "비밀번호를 입력하여 Rwanda Wallet에 접근하세요"
         )
     }
 }
@@ -432,11 +432,11 @@ private fun getEnglishStringsForSkin(skin: Skin): Strings {
             settingsAppInfoDescription = "Learn about LA Wallet",
             loginTitle = "Enter password to access your LA Wallet"
         )
-        Skin.LIBERIA -> baseStrings.copy(
-            headerTitle = "Liberia Wallet",
-            headerTitleMain = "Liberia Wallet",
-            settingsAppInfoDescription = "Learn about Liberia Wallet",
-            loginTitle = "Enter password to access your Liberia Wallet"
+        Skin.RWANDA -> baseStrings.copy(
+            headerTitle = "Rwanda Wallet",
+            headerTitleMain = "Rwanda Wallet",
+            settingsAppInfoDescription = "Learn about Rwanda Wallet",
+            loginTitle = "Enter password to access your Rwanda Wallet"
         )
     }
 }
