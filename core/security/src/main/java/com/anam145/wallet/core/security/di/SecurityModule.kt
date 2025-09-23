@@ -1,10 +1,10 @@
 package com.anam145.wallet.core.security.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import com.anam145.wallet.core.security.data.repository.SecurityRepositoryImpl
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import com.anam145.wallet.core.security.data.repository.EncryptedSecurityRepositoryImpl
 import com.anam145.wallet.core.security.data.util.KdfParamsTypeAdapter
 import com.anam145.wallet.core.security.domain.repository.SecurityRepository
 import com.anam145.wallet.core.security.model.KdfParams
@@ -20,22 +20,18 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 /**
- * Security DataStore 확장 프로퍼티
- */
-private val Context.securityDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "security_preferences"
-)
-
-/**
  * Security 모듈 의존성 제공
+ * 
+ * Android Keystore 기반 암호화를 사용하여 민감한 데이터를 보호합니다.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class SecurityModule {
     
+    // 암호화된 구현체를 사용하도록 변경
     @Binds
     abstract fun bindSecurityRepository(
-        securityRepositoryImpl: SecurityRepositoryImpl
+        encryptedSecurityRepositoryImpl: EncryptedSecurityRepositoryImpl
     ): SecurityRepository
     
     companion object {
@@ -48,13 +44,30 @@ abstract class SecurityModule {
                 .create()
         }
         
+        /**
+         * 암호화된 SharedPreferences 제공
+         * Android Keystore를 사용하여 자동으로 암호화/복호화
+         */
         @Provides
         @Singleton
-        @Named("security")
-        fun provideSecurityDataStore(
+        @Named("encrypted_security")
+        fun provideEncryptedSharedPreferences(
             @ApplicationContext context: Context
-        ): DataStore<Preferences> {
-            return context.securityDataStore
+        ): SharedPreferences {
+            // Master Key 생성 (Android Keystore에 저장됨)
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+            
+            // 암호화된 SharedPreferences 생성
+            return EncryptedSharedPreferences.create(
+                context,
+                "encrypted_security_prefs",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
         }
+        
     }
 }

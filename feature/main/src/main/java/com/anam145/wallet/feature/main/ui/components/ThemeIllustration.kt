@@ -29,23 +29,23 @@ fun ThemeIllustration(
     modifier: Modifier = Modifier
 ) {
     when (skin) {
-        Skin.SEOUL -> {
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.BottomEnd
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.illustration_seoul),
-                    contentDescription = "Seoul Theme Illustration",
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .aspectRatio(1f)
-                        .padding(16.dp)
-                        .alpha(0.3f),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
+        // Skin.SEOUL -> {
+        //     Box(
+        //         modifier = modifier,
+        //         contentAlignment = Alignment.BottomEnd
+        //     ) {
+        //         Image(
+        //             painter = painterResource(id = R.drawable.illustration_seoul),
+        //             contentDescription = "Seoul Theme Illustration",
+        //             modifier = Modifier
+        //                 .fillMaxWidth(0.5f)
+        //                 .aspectRatio(1f)
+        //                 .padding(16.dp)
+        //                 .alpha(0.3f),
+        //             contentScale = ContentScale.Fit
+        //         )
+        //     }
+        // }
         Skin.BUSAN -> {
             Box(
                 modifier = modifier,
@@ -63,23 +63,23 @@ fun ThemeIllustration(
                 )
             }
         }
-        Skin.LA -> {
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.BottomEnd
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.illustration_la),
-                    contentDescription = "LA Theme Illustration",
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .aspectRatio(1f)
-                        .padding(16.dp)
-                        .alpha(0.3f),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
+        // Skin.LA -> {
+        //     Box(
+        //         modifier = modifier,
+        //         contentAlignment = Alignment.BottomEnd
+        //     ) {
+        //         Image(
+        //             painter = painterResource(id = R.drawable.illustration_la),
+        //             contentDescription = "LA Theme Illustration",
+        //             modifier = Modifier
+        //                 .fillMaxWidth(0.5f)
+        //                 .aspectRatio(1f)
+        //                 .padding(16.dp)
+        //                 .alpha(0.3f),
+        //             contentScale = ContentScale.Fit
+        //         )
+        //     }
+        // }
         Skin.ANAM -> {
             // ANAM 테마는 일러스트 없음
         }

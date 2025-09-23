@@ -83,6 +83,9 @@ dependencies {
     
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+    
+    // Window Size Class
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

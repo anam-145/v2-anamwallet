@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anam145.wallet.core.ui.components.Header
 import com.anam145.wallet.core.ui.language.LocalStrings
@@ -17,6 +18,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.anam145.wallet.feature.miniapp.blockchain.ui.components.BlockchainWebView
 import com.anam145.wallet.feature.miniapp.common.ui.components.ErrorContent
 import com.anam145.wallet.feature.miniapp.common.ui.components.ServiceConnectionCard
+import com.anam145.wallet.feature.miniapp.common.ui.components.ResponsiveWebViewContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,8 +70,8 @@ private fun BlockchainScreenContent(
         topBar = {
             Header(
                 title = strings.headerTitle,
-                showBackButton = true,
-                onBackClick = {
+                showBackButton = false,  // 뒤로가기 버튼 제거
+                onTitleClick = {  // 타이틀 클릭 시 뒤로가기
                     viewModel.handleIntent(BlockchainContract.Intent.NavigateBack)
                 },
                 showBlockchainStatus = uiState.isActivated,
@@ -100,15 +102,17 @@ private fun BlockchainScreenContent(
                 }
                 uiState.manifest != null -> {
                     uiState.manifest?.let { manifest ->
-                        BlockchainWebView(
-                            blockchainId = blockchainId,
-                            manifest = manifest,
-                            fileManager = fileManager,
-                            onWebViewCreated = { 
-                                webView = it
-                                viewModel.onWebViewReady()
-                            }
-                        )
+                        ResponsiveWebViewContainer {
+                            BlockchainWebView(
+                                blockchainId = blockchainId,
+                                manifest = manifest,
+                                fileManager = fileManager,
+                                onWebViewCreated = { 
+                                    webView = it
+                                    viewModel.onWebViewReady()
+                                }
+                            )
+                        }
                     }
                 }
             }

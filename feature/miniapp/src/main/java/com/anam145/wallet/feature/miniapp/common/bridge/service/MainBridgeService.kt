@@ -197,7 +197,7 @@ class MainBridgeService : Service() {
         }
         
         override fun createKeystore(
-            privateKey: String,
+            secret: String,
             address: String,
             callback: IKeystoreCallback
         ) {
@@ -216,7 +216,7 @@ class MainBridgeService : Service() {
                     val result = generateKeystoreUseCase(
                         password = password,
                         address = address,
-                        privateKey = privateKey
+                        secret = secret
                     )
                     
                     result.fold(
@@ -264,6 +264,7 @@ class MainBridgeService : Service() {
                     result.fold(
                         onSuccess = { credentials ->
                             Log.d(TAG, "Keystore decrypted successfully")
+                            // credentials.privateKey는 실제로 secret hex data
                             callback.onSuccess(credentials.address, credentials.privateKey)
                         },
                         onFailure = { error ->

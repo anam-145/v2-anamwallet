@@ -42,11 +42,13 @@ interface IMainBridgeService {
     /**
      * 키스토어 생성 요청
      * 
-     * @param privateKey 개인키 (16진수 문자열)
+     * @param secret 암호화할 비밀 데이터 (16진수 문자열, 0x prefix 포함)
+     *               - Ethereum: mnemonic phrase의 hex
+     *               - Bitcoin: wallet JSON (mnemonic + networks)의 hex
      * @param address 지갑 주소
      * @param callback 결과 콜백
      */
-    void createKeystore(String privateKey, String address, IKeystoreCallback callback);
+    void createKeystore(String secret, String address, IKeystoreCallback callback);
     
     /**
      * 키스토어 복호화 요청

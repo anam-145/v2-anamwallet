@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anam145.wallet.core.ui.components.Header
 import com.anam145.wallet.core.ui.language.LocalStrings
@@ -17,6 +18,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.WebAppWebView
 import com.anam145.wallet.feature.miniapp.common.ui.components.ErrorContent
 import com.anam145.wallet.feature.miniapp.common.ui.components.ServiceConnectionCard
+import com.anam145.wallet.feature.miniapp.common.ui.components.ResponsiveWebViewContainer
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.VPBottomSheet
 import com.anam145.wallet.feature.miniapp.webapp.ui.components.TransactionApprovalBottomSheet
 
@@ -142,8 +144,8 @@ private fun WebAppScreenContent(
         topBar = {
             Header(
                 title = strings.headerTitle,
-                showBackButton = true,
-                onBackClick = {
+                showBackButton = false,  // 뒤로가기 버튼 제거
+                onTitleClick = {  // 타이틀 클릭 시 뒤로가기
                     viewModel.handleIntent(WebAppContract.Intent.NavigateBack)
                 },
                 showBlockchainStatus = !uiState.activeBlockchainName.isNullOrEmpty(),
@@ -172,25 +174,27 @@ private fun WebAppScreenContent(
                 }
                 uiState.manifest != null -> {
                     uiState.manifest?.let { manifest ->
-                        WebAppWebView(
-                            appId = appId,
-                            manifest = manifest,
-                            fileManager = fileManager,
-                            onTransactionRequest = { transactionData ->
-                                viewModel.handleIntent(
-                                    WebAppContract.Intent.RequestTransaction(transactionData)
-                                )
-                            },
-                            onVPRequest = { vpRequest ->
-                                viewModel.handleIntent(
-                                    WebAppContract.Intent.RequestVP(vpRequest)
-                                )
-                            },
-                            onWebViewCreated = { 
-                                webView = it
-                                viewModel.onWebViewReady()
-                            }
-                        )
+                        ResponsiveWebViewContainer {
+                            WebAppWebView(
+                                appId = appId,
+                                manifest = manifest,
+                                fileManager = fileManager,
+                                onTransactionRequest = { transactionData ->
+                                    viewModel.handleIntent(
+                                        WebAppContract.Intent.RequestTransaction(transactionData)
+                                    )
+                                },
+                                onVPRequest = { vpRequest ->
+                                    viewModel.handleIntent(
+                                        WebAppContract.Intent.RequestVP(vpRequest)
+                                    )
+                                },
+                                onWebViewCreated = { 
+                                    webView = it
+                                    viewModel.onWebViewReady()
+                                }
+                            )
+                        }
                     }
                 }
             }

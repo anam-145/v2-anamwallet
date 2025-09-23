@@ -123,11 +123,11 @@ class BlockchainUIJavaScriptBridge(
     }
     
     @JavascriptInterface
-    fun createKeystore(privateKey: String, address: String) {
+    fun createKeystore(secret: String, address: String) {
         Log.d(TAG, "createKeystore called: address=$address")
         
-        if (privateKey.isBlank()) {
-            sendKeystoreError("Private key is required")
+        if (secret.isBlank()) {
+            sendKeystoreError("Secret data is required")
             return
         }
         
@@ -143,7 +143,7 @@ class BlockchainUIJavaScriptBridge(
         }
         
         try {
-            service.createKeystore(privateKey, address, object : IKeystoreCallback.Stub() {
+            service.createKeystore(secret, address, object : IKeystoreCallback.Stub() {
                 override fun onSuccess(keystoreJson: String) {
                     Log.d(TAG, "Keystore created successfully")
                     sendKeystoreResult(true, keystoreJson)
@@ -180,44 +180,65 @@ class BlockchainUIJavaScriptBridge(
     
     @JavascriptInterface
     fun decryptKeystore(keystoreJson: String) {
-        Log.d(TAG, "decryptKeystore called")
+        Log.d(TAG, "========== BlockchainUI decryptKeystore START ==========")
+        Log.d(TAG, "[UI] Keystore length: ${keystoreJson.length}")
+        Log.d(TAG, "[UI] First 100 chars: ${keystoreJson.take(100)}...")
         
         if (keystoreJson.isBlank()) {
+            Log.e(TAG, "[UI] ERROR: Keystore JSON is blank")
             sendDecryptError("Keystore JSON is required")
             return
         }
         
         val service = mainBridgeService
         if (service == null) {
+            Log.e(TAG, "[UI] ERROR: MainBridgeService not connected")
             sendDecryptError("Service not connected")
             return
         }
         
+        Log.d(TAG, "[UI] Calling MainBridgeService.decryptKeystore...")
         try {
             service.decryptKeystore(keystoreJson, object : IKeystoreDecryptCallback.Stub() {
-                override fun onSuccess(address: String, privateKey: String) {
-                    Log.d(TAG, "Keystore decrypted successfully")
-                    sendDecryptResult(true, address, privateKey, null)
+                override fun onSuccess(address: String, secret: String) {
+                    Log.d(TAG, "[UI] ✅ Decryption SUCCESS")
+                    Log.d(TAG, "[UI] Address: $address")
+                    Log.d(TAG, "[UI] Data length: ${secret.length}")
+                    Log.d(TAG, "[UI] First 40 chars: ${secret.take(40)}...")
+                    Log.d(TAG, "[UI] Has 0x prefix: ${secret.startsWith("0x")}")
+                    
+                    // Hex 디코딩 테스트
+                    try {
+                        val testBytes = secret.chunked(2).take(20).map { it.toInt(16).toByte() }
+                        val testString = String(testBytes.toByteArray())
+                        Log.d(TAG, "[UI] Decoded preview: $testString")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "[UI] Failed to decode preview: ${e.message}")
+                    }
+                    
+                    sendDecryptResult(true, address, secret, null)
                 }
                 
                 override fun onError(errorMessage: String) {
-                    Log.e(TAG, "Keystore decryption failed: $errorMessage")
+                    Log.e(TAG, "[UI] ❌ Decryption FAILED: $errorMessage")
                     sendDecryptResult(false, null, null, errorMessage)
                 }
             })
         } catch (e: Exception) {
-            Log.e(TAG, "Error calling decryptKeystore", e)
+            Log.e(TAG, "[UI] Exception in decryptKeystore", e)
             sendDecryptError(e.message ?: "Unknown error")
         }
+        Log.d(TAG, "========== BlockchainUI decryptKeystore END ==========")
     }
     
-    private fun sendDecryptResult(success: Boolean, address: String?, privateKey: String?, error: String?) {
+    private fun sendDecryptResult(success: Boolean, address: String?, secret: String?, error: String?) {
         (context as? ComponentActivity)?.runOnUiThread {
             webView?.let { web ->
                 val script = if (success) {
                     val addressJson = gson.toJson(address)
-                    val privateKeyJson = gson.toJson(privateKey)
-                    "window.dispatchEvent(new CustomEvent('keystoreDecrypted', { detail: { success: true, address: $addressJson, privateKey: $privateKeyJson } }));"
+                    // secret 필드명으로 통일 (mnemonic hex 또는 wallet JSON hex)
+                    val secretJson = gson.toJson(secret)
+                    "window.dispatchEvent(new CustomEvent('keystoreDecrypted', { detail: { success: true, address: $addressJson, secret: $secretJson } }));"
                 } else {
                     val errorJson = gson.toJson(error)
                     "window.dispatchEvent(new CustomEvent('keystoreDecrypted', { detail: { success: false, error: $errorJson } }));"

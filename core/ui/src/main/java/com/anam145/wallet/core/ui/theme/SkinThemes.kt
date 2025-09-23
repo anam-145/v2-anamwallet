@@ -104,6 +104,6 @@ private val LAColorScheme = lightColorScheme(
 fun getColorSchemeForSkin(skin: Skin) = when (skin) {
     Skin.ANAM -> AnamColorScheme
     Skin.BUSAN -> BusanColorScheme
-    Skin.SEOUL -> SeoulColorScheme
-    Skin.LA -> LAColorScheme
+    // Skin.SEOUL -> SeoulColorScheme
+    // Skin.LA -> LAColorScheme
 }

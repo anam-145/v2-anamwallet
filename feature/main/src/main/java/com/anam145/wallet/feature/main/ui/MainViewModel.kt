@@ -116,6 +116,7 @@ class MainViewModel @Inject constructor(
     fun handleIntent(intent: MainContract.MainIntent) {
         when (intent) {
             is MainContract.MainIntent.ClickBlockchainApp -> handleBlockchainClick(intent.miniApp)
+            is MainContract.MainIntent.SwitchBlockchain -> handleBlockchainSwitch(intent.miniApp)
             is MainContract.MainIntent.ClickRegularApp -> handleAppClick(intent.miniApp)
         }
     }
@@ -202,9 +203,22 @@ class MainViewModel @Inject constructor(
                     }
                 }
                 is MiniAppResult.Error -> {
+                    // NoAppsInstalled는 에러가 아니라 정상 상태 (빈 목록)
+                    if (result is MiniAppResult.Error.NoAppsInstalled) {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = null,  // 에러 메시지 표시하지 않음
+                                regularApps = emptyList(),
+                                blockchainApps = emptyList()
+                            )
+                        }
+                        return@launch
+                    }
+                    
                     val errorMessage = when (result) {
                         is MiniAppResult.Error.NoAppsInstalled -> 
-                            "설치된 앱이 없습니다"
+                            "No apps installed"  // 실제로는 위에서 처리되어 여기 도달 안함
                         is MiniAppResult.Error.ScanFailed -> 
                             "앱 스캔 실패: ${result.cause.message}"
                         is MiniAppResult.Error.InstallationFailed ->
@@ -267,6 +281,31 @@ class MainViewModel @Inject constructor(
             
             // 4. 블록체인 UI 액티비티 실행
             _effect.emit(MainContract.MainEffect.LaunchBlockchainActivity(miniApp.appId))
+        }
+    }
+    
+    /**
+     * 블록체인 전환만 처리 (UI 표시 없음)
+     * 
+     * 부산 스킨의 드롭다운 등에서 사용.
+     * 백그라운드에서 블록체인만 전환하고 UI는 표시하지 않습니다.
+     */
+    private fun handleBlockchainSwitch(miniApp: MiniApp) {
+        viewModelScope.launch {
+            // 이미 활성화된 블록체인이면 아무것도 하지 않음
+            if (_uiState.value.activeBlockchainId == miniApp.appId) {
+                return@launch
+            }
+            
+            // 1. UI 상태 즉시 업데이트 (사용자 피드백)
+            _uiState.update { it.copy(activeBlockchainId = miniApp.appId) }
+            
+            // 2. 영구 저장소에 활성 블록체인 ID 저장
+            setActiveBlockchainUseCase(miniApp.appId)
+            
+            // 3. observeBlockchainService()가 activeBlockchainId 변경을 감지하여
+            //    자동으로 블록체인을 전환할 것임
+            // 4. UI 액티비티는 실행하지 않음 (백그라운드 전환만)
         }
     }
 

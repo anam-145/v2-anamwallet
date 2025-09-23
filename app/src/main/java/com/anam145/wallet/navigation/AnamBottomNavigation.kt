@@ -7,12 +7,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -48,72 +55,91 @@ private val bottomNavItems: List<BottomNavItem>
 /**
  * ANAM Wallet Bottom Navigation Bar
  * @param navController 네비게이션 컨트롤러
+ * @param modifier 외부에서 전달받는 Modifier
  */
 @Composable
 fun AnamBottomNavigation(
-    navController: NavController
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     // 현재 선택된 경로 추적
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val strings = LocalStrings.current
     
+    // 하단 인셋 계산 (네비게이션 바 + 키보드)
+    val bottomInsets = WindowInsets.navigationBars
+        .only(WindowInsetsSides.Bottom)
+        .union(WindowInsets.ime)
+    
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .shadow(elevation = 8.dp),
-        color = MaterialTheme.colorScheme.surface
+        modifier = modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,       // 완전히 플랫하게
+        shadowElevation = 0.dp       // 그림자 제거로 떠있는 느낌 해결
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute == item.route.route
-                
-                BottomNavItem(
-                    selected = selected,
-                    onClick = {
-                        if (!selected) {
-                            navController.navigate(item.route.route) {
-                                // 시작 지점까지 스택을 비움
-                                // 즉, 홈 → 설정 → 허브 → 브라우저 → [허브] 를 눌렀다면,
-                                // → 설정/허브/브라우저 스택은 모두 제거되고
-                                // → 허브로 이동함
-                                popUpTo(navController.graph.startDestinationId) {
-                                    /**
-                                     * 이건 제거한 화면의 상태를 저장하겠다는 뜻
-                                     * 나중에 restoreState = true가 설정되어 있으면,
-                                     * 해당 화면에 다시 갔을 때 초기화되지 않고 그대로 복원.
-                                     * ex:
-                                     * 사용자가 Settings 화면에서 스크롤을 내린 상태였고
-                                     * 다른 탭으로 이동했다가 다시 Settings를 눌렀을 때,
-                                     * 스크롤 위치나 UI 상태가 복원 됨.*/
-                                    saveState = true
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // 상단에 얇은 구분선 추가
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            )
+            
+            // 슬림한 바 컨텐츠
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)  // Material3 기본 높이로 슬림하게
+                    .padding(horizontal = 16.dp),  // 수평 패딩만 적용
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                bottomNavItems.forEach { item ->
+                    val selected = currentRoute == item.route.route
+                    
+                    BottomNavItem(
+                        selected = selected,
+                        onClick = {
+                            if (!selected) {
+                                navController.navigate(item.route.route) {
+                                    // 시작 지점까지 스택을 비움
+                                    // 즉, 홈 → 설정 → 허브 → 브라우저 → [허브] 를 눌렀다면,
+                                    // → 설정/허브/브라우저 스택은 모두 제거되고
+                                    // → 허브로 이동함
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        /**
+                                         * 이건 제거한 화면의 상태를 저장하겠다는 뜻
+                                         * 나중에 restoreState = true가 설정되어 있으면,
+                                         * 해당 화면에 다시 갔을 때 초기화되지 않고 그대로 복원.
+                                         * ex:
+                                         * 사용자가 Settings 화면에서 스크롤을 내린 상태였고
+                                         * 다른 탭으로 이동했다가 다시 Settings를 눌렀을 때,
+                                         * 스크롤 위치나 UI 상태가 복원 됨.*/
+                                        saveState = true
 
+                                    }
+                                    // 동일한 화면이 여러 번 스택에 쌓이지 않도록 함
+                                    launchSingleTop = true
+                                    // 다시 이동 시 상태 복원, saveState = true 이거랑 세트
+                                    restoreState = true
                                 }
-                                // 동일한 화면이 여러 번 스택에 쌓이지 않도록 함
-                                launchSingleTop = true
-                                // 다시 이동 시 상태 복원, saveState = true 이거랑 세트
-                                restoreState = true
                             }
+                        },
+                        icon = if (selected) item.selectedIcon else item.unselectedIcon,
+                        label = when (item.labelKey) {
+                            "main" -> strings.navMain
+                            "hub" -> strings.navHub
+                            "browser" -> strings.navBrowser
+                            "identity" -> strings.navDid
+                            "settings" -> strings.navSettings
+                            else -> ""
                         }
-                    },
-                    icon = if (selected) item.selectedIcon else item.unselectedIcon,
-                    label = when (item.labelKey) {
-                        "main" -> strings.navMain
-                        "hub" -> strings.navHub
-                        "browser" -> strings.navBrowser
-                        "identity" -> strings.navDid
-                        "settings" -> strings.navSettings
-                        else -> ""
-                    }
-                )
+                    )
+                }
             }
+            
+            // Surface가 시스템 네비게이션 영역까지 칠하도록 Spacer 추가
+            Spacer(modifier = Modifier.windowInsetsBottomHeight(bottomInsets))
         }
     }
 }
@@ -187,12 +213,12 @@ private fun RowScope.BottomNavItem(
                 imageVector = icon,
                 contentDescription = label,
                 modifier = Modifier
-                    .size(26.dp)
+                    .size(24.dp)  // 26dp에서 24dp로 줄임
                     .scale(scale),
                 tint = color
             )
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))  // 4dp에서 2dp로 줄임
             
             // 라벨
             Text(

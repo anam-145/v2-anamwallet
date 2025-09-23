@@ -39,6 +39,12 @@ import javax.inject.Inject
 import com.anam145.wallet.core.data.datastore.SkinDataStore
 import com.anam145.wallet.core.common.model.Skin
 import com.anam145.wallet.core.common.constants.SkinConstants
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScaffoldDefaults
+import com.anam145.wallet.core.ui.components.ResponsiveContentWrapper
 
 // Hilt가 의존성을 주입하는 시작점
 @AndroidEntryPoint
@@ -125,6 +131,7 @@ class MainActivity : ComponentActivity() {
                 initialValue = SkinConstants.DEFAULT_SKIN
             )
             AnamWalletApp(
+                activity = this,
                 authState = authStateValue,
                 skin = currentSkin
             )
@@ -146,6 +153,7 @@ class MainActivity : ComponentActivity() {
  */
 @Composable
 fun AnamWalletApp(
+    activity: ComponentActivity,
     authState: MainActivity.AuthState = MainActivity.AuthState.Loading,
     skin: Skin = Skin.ANAM
 ) {
@@ -214,6 +222,7 @@ fun AnamWalletApp(
             
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
+                contentWindowInsets = ScaffoldDefaults.contentWindowInsets,  // 기본값 사용 (시스템 바 안전 영역)
                 topBar = {
                     // 상단 헤더 (인증 화면에서는 숨김)
                     if (showBottomBar) {
@@ -223,19 +232,13 @@ fun AnamWalletApp(
                                 AnamNavRoute.Main -> strings.headerTitleMain
                                 AnamNavRoute.Hub -> strings.headerTitleHub
                                 AnamNavRoute.Browser -> strings.headerTitleBrowser
-                                AnamNavRoute.Identity -> strings.headerTitleIdentity
+                                // AnamNavRoute.Identity -> strings.headerTitleIdentity  // DID 기능 임시 비활성화
                                 AnamNavRoute.Settings -> strings.headerTitleSettings
                                 else -> strings.headerTitle
                             },
                             showBlockchainStatus = true,  // 모든 화면에서 블록체인 상태 표시
-                            activeBlockchainName = activeBlockchain?.name,
-                            onBlockchainClick = if (activeBlockchain != null) {
-                                {
-                                    mainViewModel.handleIntent(
-                                        MainContract.MainIntent.ClickBlockchainApp(activeBlockchain)
-                                    )
-                                }
-                            } else null
+                            activeBlockchainName = activeBlockchain?.name
+                            // onBlockchainClick 제거 - 클릭해도 이동하지 않음
                         )
                     }
                 },
@@ -246,13 +249,25 @@ fun AnamWalletApp(
                     }
                 }
             ) { innerPadding ->
-                // Navigation Host - 모든 화면들을 관리
-                AnamNavHost(
-                    navController = navController,
-                    mainViewModel = mainViewModel,
-                    modifier = Modifier.padding(innerPadding),
-                    startDestination = startDestination
-                )
+                // 컨텐츠 레이아웃 래퍼
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding)  // 중첩된 컴포저블에서 insets 읽기 위해 유지
+                ) {
+                    // 반응형 콘텐츠 래퍼 - 태블릿에서 폰 크기로 제한
+                    ResponsiveContentWrapper {
+                        // Navigation Host - 모든 화면들을 관리
+                        AnamNavHost(
+                            navController = navController,
+                            mainViewModel = mainViewModel,
+                            modifier = Modifier.fillMaxSize(),
+                            startDestination = startDestination
+                        )
+                    }
+                }
             }
         }
     }

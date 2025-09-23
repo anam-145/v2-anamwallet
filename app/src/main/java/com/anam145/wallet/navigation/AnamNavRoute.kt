@@ -51,8 +51,9 @@ sealed class AnamNavRoute(
     /** 브라우저 화면 - 웹 브라우징 */
     data object Browser : AnamNavRoute("browser")
     
-    /** 신원(Identity) 화면 - DID/VC 관리 */
-    data object Identity : AnamNavRoute("identity")
+    // DID 기능 임시 비활성화
+    // /** 신원(Identity) 화면 - DID/VC 관리 */
+    // data object Identity : AnamNavRoute("identity")
     
     /** 설정 화면 - 앱 설정 및 프로필 */
     data object Settings : AnamNavRoute("settings")
@@ -95,6 +96,23 @@ sealed class AnamNavRoute(
     
     /** 비밀번호 설정 화면 - 최초 설정 */
     data object SetupPassword : AnamNavRoute("auth/setup")
+    
+    // ========== 설정 관련 화면들 (Deprecated - SettingsRoute 사용) ==========
+    // Settings는 이제 Nested Navigation을 사용하므로
+    // 이 route들은 더 이상 메인 NavHost에서 사용되지 않습니다.
+    // 호환성을 위해 남겨두었지만, SettingsRoute를 사용하세요.
+    
+    @Deprecated("Use SettingsRoute.Help instead", level = DeprecationLevel.WARNING)
+    data object Help : AnamNavRoute("settings/help")
+    
+    @Deprecated("Use SettingsRoute.FAQ instead", level = DeprecationLevel.WARNING)
+    data object FAQ : AnamNavRoute("settings/faq")
+    
+    @Deprecated("Use SettingsRoute.AppInfo instead", level = DeprecationLevel.WARNING)
+    data object AppInfo : AnamNavRoute("settings/appinfo")
+    
+    @Deprecated("Use SettingsRoute.License instead", level = DeprecationLevel.WARNING)
+    data object License : AnamNavRoute("settings/license")
 
     
     companion object {
@@ -109,12 +127,16 @@ sealed class AnamNavRoute(
                 Main.route -> Main
                 Hub.route -> Hub
                 Browser.route -> Browser
-                Identity.route -> Identity
+                // Identity.route -> Identity  // DID 기능 임시 비활성화
                 Settings.route -> Settings
                 StudentCardDetail.route -> StudentCardDetail
                 DriverLicenseDetail.route -> DriverLicenseDetail
                 Login.route -> Login
                 SetupPassword.route -> SetupPassword
+                Help.route -> Help
+                FAQ.route -> FAQ
+                AppInfo.route -> AppInfo
+                License.route -> License
                 else -> {
                     // 파라미터가 있는 route 처리
                     when {
