@@ -55,8 +55,7 @@ private fun AuthError.toMessage(): String {
         AuthError.PasswordMismatch -> strings.authErrorPasswordMismatch
         AuthError.LoginFailed -> strings.authErrorLoginFailed
         AuthError.PasswordSetupFailed -> strings.authErrorPasswordSetupFailed
-        // AuthError.DIDCreationFailed -> strings.authErrorDIDCreationFailed  // DID 기능 비활성화
-        else -> strings.authErrorPasswordSetupFailed  // 기본 에러 메시지
+        AuthError.DIDCreationFailed -> strings.authErrorDIDCreationFailed
     }
 }
 

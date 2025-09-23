@@ -51,9 +51,8 @@ sealed class AnamNavRoute(
     /** 브라우저 화면 - 웹 브라우징 */
     data object Browser : AnamNavRoute("browser")
     
-    // DID 기능 임시 비활성화
-    // /** 신원(Identity) 화면 - DID/VC 관리 */
-    // data object Identity : AnamNavRoute("identity")
+    /** 신원(Identity) 화면 - DID/VC 관리 */
+    data object Identity : AnamNavRoute("identity")
     
     /** 설정 화면 - 앱 설정 및 프로필 */
     data object Settings : AnamNavRoute("settings")
@@ -127,7 +126,7 @@ sealed class AnamNavRoute(
                 Main.route -> Main
                 Hub.route -> Hub
                 Browser.route -> Browser
-                // Identity.route -> Identity  // DID 기능 임시 비활성화
+                Identity.route -> Identity
                 Settings.route -> Settings
                 StudentCardDetail.route -> StudentCardDetail
                 DriverLicenseDetail.route -> DriverLicenseDetail
