@@ -7,11 +7,12 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,7 +26,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +53,6 @@ import com.anam145.wallet.core.ui.language.LocalStrings
 import com.anam145.wallet.core.ui.language.Strings
 import com.anam145.wallet.core.common.constants.SectionOrder
 import com.anam145.wallet.feature.main.ui.components.ThemeIllustration
-import com.anam145.wallet.feature.main.ui.skins.BusanScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -62,8 +69,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
     onNavigateToMiniApp: (String) -> Unit = {},
-    onLaunchBlockchain: (String) -> Unit = {},
-    onNavigateToHub: () -> Unit = {}
+    onLaunchBlockchain: (String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val strings = LocalStrings.current
@@ -115,67 +121,45 @@ fun MainScreen(
                 )
             }
             else -> {
-                // 스킨별 커스텀 화면 분기
-                when (uiState.currentSkin) {
-                    Skin.BUSAN -> {
-                        BusanScreen(
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // 두 리스트가 모두 비어있을 때 전체 빈 상태 표시
+                    if (uiState.blockchainApps.isEmpty() && uiState.regularApps.isEmpty()) {
+                        EmptyStateView(
+                            strings = strings,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        MiniAppList(
                             blockchainApps = uiState.blockchainApps,
                             regularApps = uiState.regularApps,
                             activeBlockchainId = uiState.activeBlockchainId,
-                            onBlockchainClick = { miniApp ->
-                                viewModel.handleIntent(
-                                    MainContract.MainIntent.SwitchBlockchain(miniApp)
-                                )
-                            },
-                            onRegularAppClick = { miniApp ->
-                                viewModel.handleIntent(
-                                    MainContract.MainIntent.ClickRegularApp(miniApp)
-                                )
-                            },
-                            onViewBlockchainDetail = { miniApp ->
-                                viewModel.handleIntent(
-                                    MainContract.MainIntent.ClickBlockchainApp(miniApp)
-                                )
-                            },
-                            onNavigateToHub = onNavigateToHub
+                            sectionOrder = uiState.sectionOrder,
+                            onBlockchainClick = { viewModel.handleIntent(MainContract.MainIntent.ClickBlockchainApp(it)) },
+                            onAppClick = { viewModel.handleIntent(MainContract.MainIntent.ClickRegularApp(it)) }
                         )
                     }
-                    // 추후 다른 커스텀 스킨 추가 시
-                    // Skin.SEOUL -> SeoulScreen(...)
-                    // Skin.JEJU -> JejuScreen(...)
-                    
-                    else -> {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            // 두 리스트가 모두 비어있을 때 전체 빈 상태 표시
-                            if (uiState.blockchainApps.isEmpty() && uiState.regularApps.isEmpty()) {
-                                EmptyStateView(
-                                    strings = strings,
-                                    currentSkin = uiState.currentSkin,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            } else {
-                                MiniAppList(
-                                    blockchainApps = uiState.blockchainApps,
-                                    regularApps = uiState.regularApps,
-                                    activeBlockchainId = uiState.activeBlockchainId,
-                                    sectionOrder = uiState.sectionOrder,
-                                    onBlockchainClick = { viewModel.handleIntent(MainContract.MainIntent.ClickBlockchainApp(it)) },
-                                    onAppClick = { viewModel.handleIntent(MainContract.MainIntent.ClickRegularApp(it)) }
-                                )
-                            }
-                            
-                            // 테마별 일러스트레이션 표시
-                            ThemeIllustration(
-                                skin = uiState.currentSkin,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                    }
+
+                    // 테마별 일러스트레이션 표시
+                    ThemeIllustration(
+                        skin = uiState.currentSkin,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 private fun MiniAppList(
@@ -588,7 +572,6 @@ private fun MiniAppIcon(
 @Composable
 private fun EmptyStateView(
     strings: Strings,
-    currentSkin: Skin,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -618,12 +601,9 @@ private fun EmptyStateView(
         
         Spacer(modifier = Modifier.height(32.dp))
         
-        // 제목 (스킨에 따라 다른 메시지)
+        // 제목
         Text(
-            text = when (currentSkin) {
-                Skin.BUSAN -> strings.mainEmptyStateTitleBusan
-                else -> strings.mainEmptyStateTitle
-            },
+            text = strings.mainEmptyStateTitle,
             style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.SemiBold
             ),

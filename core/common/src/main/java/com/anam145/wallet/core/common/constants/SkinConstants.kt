@@ -25,15 +25,31 @@ object SkinConstants {
      */
     val DEFAULT_SKIN_MINIAPPS = mapOf(
         Skin.ANAM to listOf(
-            // ANAM 월렛은 기본 앱 없음
+            // 빈 상태 테스트를 위해 임시로 비워둠
         ),
         Skin.BUSAN to listOf(
-            // Assets에 추가된 4개 앱
             "com.anam.6nqxb5qfm5lptbc9", // 비온미디어
             "com.anam.vh7lpswl75iqdarh", // 부산일보
             "com.anam.rehrxj11f38gn09k", // 비트코인
             "com.anam.osba5s0oy5582dc0" // 이더리움
-        )
+        ),
+        // Skin.SEOUL to listOf(
+        //     "com.anam.ethereum",
+        //     "com.seoul.bike",
+        //     "com.seoul.culture",
+        //     "com.seoul.news",
+        //     "com.seoul.sto",
+        //     "com.seoul.visitseoul"
+        // ),
+        // Skin.LA to listOf(
+        //     "com.anam.bitcoin",
+        //     "com.anam.ethereum",
+        //     "com.la.airbnb",
+        //     "com.la.tapla",
+        //     "com.la.uber",
+        //     "com.la.universal",
+        //     "com.la.yelp"
+        // )
     )
     
     /**
@@ -48,6 +64,8 @@ object SkinConstants {
      */
     val DEFAULT_SECTION_ORDERS = mapOf(
         Skin.ANAM to SectionOrder.BLOCKCHAIN_FIRST,
-        Skin.BUSAN to SectionOrder.APPS_FIRST
+        Skin.BUSAN to SectionOrder.APPS_FIRST,
+        // Skin.SEOUL to SectionOrder.BLOCKCHAIN_FIRST,
+        // Skin.LA to SectionOrder.BLOCKCHAIN_FIRST
     )
 }
