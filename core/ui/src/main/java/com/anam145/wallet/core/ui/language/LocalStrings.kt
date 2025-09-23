@@ -230,7 +230,7 @@ data class Strings(
     val appInfoWebsite: String = "웹사이트",
     val appInfoWebsiteUrl: String = "https://anamwallet.com",
     val appInfoContact: String = "문의",
-    val appInfoContactEmail: String = "support@anamwallet.com",
+    val appInfoContactEmail: String = "contact@anam145.com",
     
     // License Screen
     val licenseTitle: String = "오픈소스 라이선스",
@@ -458,7 +458,7 @@ val EnglishStrings = Strings(
     appInfoWebsite = "Website",
     appInfoWebsiteUrl = "https://anamwallet.com",
     appInfoContact = "Contact",
-    appInfoContactEmail = "support@anamwallet.com",
+    appInfoContactEmail = "contact@anam145.com",
     
     // License Screen
     licenseTitle = "Open Source Licenses",

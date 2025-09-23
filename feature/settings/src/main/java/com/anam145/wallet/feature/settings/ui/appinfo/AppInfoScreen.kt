@@ -1,5 +1,6 @@
 package com.anam145.wallet.feature.settings.ui.appinfo
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anam145.wallet.core.ui.language.LocalStrings
+import com.anam145.wallet.feature.auth.R as AuthR
 
 /**
  * 앱 정보 화면
@@ -67,20 +70,11 @@ fun AppInfoScreen(
             Spacer(modifier = Modifier.height(32.dp))
             
             // 앱 로고/아이콘
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "A",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            Image(
+                painter = painterResource(id = AuthR.drawable.logo),
+                contentDescription = "ANAM Wallet Logo",
+                modifier = Modifier.size(100.dp)
+            )
             
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -100,7 +94,7 @@ fun AppInfoScreen(
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
             ) {
                 Text(
-                    text = "${strings.appInfoVersion} 2.0.0",
+                    text = "${strings.appInfoVersion} 1.0.0",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
