@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = "com.anam145.wallet.core.ui"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -26,12 +26,12 @@ android {
     }
     
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    
+
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
     
     buildFeatures {
