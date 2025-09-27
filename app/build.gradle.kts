@@ -20,6 +20,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        resources {
+            excludes += setOf(
+                "**/darwin/**",
+                "**/freebsd/**",
+                "**/linux/**",
+                "**/win32/**",
+                "**/*.dylib"
+            )
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

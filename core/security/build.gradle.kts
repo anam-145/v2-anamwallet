@@ -15,6 +15,18 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    packagingOptions {
+        resources {
+            excludes += setOf(
+                "**/darwin/**",
+                "**/freebsd/**",
+                "**/linux/**",
+                "**/win32/**",
+                "**/*.dylib"
+            )
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
