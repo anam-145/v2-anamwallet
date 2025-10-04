@@ -9,6 +9,7 @@ plugins {
 android {
     namespace = "com.anam145.wallet"
     compileSdk = 35
+    ndkVersion = "28.0.12433566"  // NDK r28+ for 16KB page size support
 
     defaultConfig {
         applicationId = "com.anam145.wallet"
@@ -18,9 +19,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Specify supported ABIs
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += setOf(
                 "**/darwin/**",

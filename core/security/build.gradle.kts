@@ -15,7 +15,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += setOf(
                 "**/darwin/**",
