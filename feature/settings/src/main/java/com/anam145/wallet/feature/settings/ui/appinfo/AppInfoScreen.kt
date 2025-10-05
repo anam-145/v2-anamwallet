@@ -94,7 +94,7 @@ fun AppInfoScreen(
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
             ) {
                 Text(
-                    text = "${strings.appInfoVersion} 1.0.0",
+                    text = "${strings.appInfoVersion} 1.0.1",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
