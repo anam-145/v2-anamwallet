@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +12,21 @@ android {
     namespace = "com.anam145.wallet"
     compileSdk = 35
     ndkVersion = "28.0.12433566"  // NDK r28+ for 16KB page size support
+
+    signingConfigs {
+        create("release") {
+            val properties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                properties.load(localPropertiesFile.inputStream())
+
+                storeFile = rootProject.file(properties.getProperty("RELEASE_STORE_FILE") ?: "keystore.jks")
+                storePassword = properties.getProperty("RELEASE_STORE_PASSWORD") ?: ""
+                keyAlias = properties.getProperty("RELEASE_KEY_ALIAS") ?: ""
+                keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD") ?: ""
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.anam145.wallet"
@@ -41,6 +58,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
